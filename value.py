@@ -1,3 +1,5 @@
+from math import exp, e
+
 class Value:
     def __init__(self, data, _children=(), _op='', label=''):
         self.data = data
@@ -9,7 +11,7 @@ class Value:
         self._backward = lambda: None
     
     def __repr__(self):
-        return f'Value(data={self.data}, label={self.label})'
+        return f'Value(data={self.data}, label={self.label})' if len(self.label) > 0 else f'Value(data={self.data})'
 
     def __add__(self, other: Value | int | float):
         other = other if isinstance(other, Value) else Value(other)
@@ -55,6 +57,15 @@ class Value:
     
     def __sub__(self, other):        
         return self + (-other)
+    
+    def tanh(self):
+        fx = (exp(2 * self.data) - 1) / (exp(2 * self.data) + 1)
+        out = Value(fx, (self,), 'tanh')
+        def _backward():
+            self.grad += (1 - fx**2) * out.grad
+            return
+        out._backward = _backward
+        return out
 
     def backward(self):
         nodes = []
