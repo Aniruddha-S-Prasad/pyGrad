@@ -82,9 +82,9 @@ class Value:
         def build_nodes(node):
             if node not in visited:
                 visited.add(node)
-            for child in node._children:
-                build_nodes(child)
-            nodes.append(node)
+                for child in node._children:
+                    build_nodes(child)
+                nodes.append(node)
         
         build_nodes(self)
         
